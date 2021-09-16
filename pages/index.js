@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { sentenceCase } from "change-case";
 
 const storageKeys = Object.freeze({
-  state: "state",
+  state: "sc-state",
   scale: "sc-location-scale",
   category: "sc-location-category",
   degree: "sc-location-degree",
@@ -40,7 +40,7 @@ const locationScaleModifiers = Object.freeze({
   tiny: 1,
   small: 2,
   average: 3,
-  Large: 4,
+  large: 4,
 });
 
 const locationCategoryItemMaximums = Object.freeze({
@@ -213,9 +213,7 @@ export default function Home() {
     const storedCalculatedLocation = localStorage.getItem(storageKeys.location);
     const storedAdjustedItems = localStorage.getItem(storageKeys.items);
 
-    const storedItemsItemsToReduce = localStorage.getItem(
-      storageKeys.reductions
-    );
+    const storedItemsToReduce = localStorage.getItem(storageKeys.reductions);
     const storedLevel = localStorage.getItem(storageKeys.level);
     const storedItemsMarkdown = localStorage.getItem(storageKeys.itemsMarkdown);
 
@@ -228,8 +226,8 @@ export default function Home() {
       storedAdjustedItems !== null ? JSON.parse(storedAdjustedItems) : null;
 
     const reductions =
-      storedItemsItemsToReduce !== null
-        ? parseInt(storedItemsItemsToReduce)
+      storedItemsToReduce !== null
+        ? parseInt(storedItemsToReduce)
         : Number.MAX_SAFE_INTEGER;
 
     const level = storedLevel !== null ? parseInt(storedLevel) : null;
@@ -343,7 +341,7 @@ export default function Home() {
     const active = currentState === state;
 
     const props = {
-      className: "nav-link",
+      className: "nav-link d-none d-lg-block",
       href: "#",
       onClick: (e) => {
         e.preventDefault();
@@ -366,6 +364,38 @@ export default function Home() {
 
     return (
       <li className="nav-item">
+        <a {...props}>{state.toUpperCase()}</a>
+      </li>
+    );
+  };
+
+  const DropdownItem = ({ state, disabled }) => {
+    const active = currentState === state;
+
+    const props = {
+      className: "dropdown-item",
+      href: "#",
+      onClick: (e) => {
+        e.preventDefault();
+        if (active || disabled) return;
+        setCurrentState(state);
+      },
+    };
+
+    if (active) {
+      props.className += " active";
+      props["aria-current"] = "page";
+    }
+
+    if (disabled) {
+      props.className += " disabled";
+      props.disabled = true;
+      props.tabIndex = -1;
+      props["aria-disabled"] = true;
+    }
+
+    return (
+      <li>
         <a {...props}>{state.toUpperCase()}</a>
       </li>
     );
@@ -465,30 +495,65 @@ export default function Home() {
         />
       </Head>
 
-      <h1>Scavenging Calculator</h1>
+      <h1>Scavenging Location Calculator</h1>
 
       <p className="lead">
-        Use this calculator to determine item minimums and maximums and location
-        levels.
+        Use this calculator to determine scavenging item minimums and maximums
+        and location levels.
       </p>
 
-      <div className="d-flex flex-xs-column flex-sm-column flex-md-column flex-lg-row justify-content-space-between my-3">
-        <button
-          type="button"
-          className="btn btn-outline-primary"
-          onClick={() => reset()}
-        >
-          Reset
-        </button>
-      </div>
+      <button
+        type="button"
+        className="btn btn-outline-primary mb-3"
+        onClick={() => reset()}
+      >
+        Reset
+      </button>
 
-      <ul className="nav nav-tabs">
+      <ul className="nav nav-tabs w-100 me--3 flex-xs-column flex-sm-column flex-md-column flex-lg-row">
+        <li className="nav-item dropdown d-lg-none">
+          <a
+            className="nav-link dropdown-toggle"
+            data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false"
+          >
+            STEPS
+          </a>
+          <ul className="dropdown-menu">
+            <DropdownItem state="location" />
+
+            <DropdownItem
+              state="items"
+              disabled={calculatedLocation === null}
+            />
+
+            <DropdownItem
+              state="level"
+              disabled={calculatedLocation === null || itemsToReduce > 0}
+            />
+
+            <DropdownItem
+              state="results"
+              disabled={
+                calculatedLocation === null ||
+                itemsToReduce > 0 ||
+                calculatedLevel === null
+              }
+            />
+          </ul>
+        </li>
+
         <Tab state="location" />
+
         <Tab state="items" disabled={calculatedLocation === null} />
+
         <Tab
           state="level"
           disabled={calculatedLocation === null || itemsToReduce > 0}
         />
+
         <Tab
           state="results"
           disabled={
@@ -534,7 +599,7 @@ export default function Home() {
                   <option value="tiny">Tiny (6 Items)</option>
                   <option value="small">Small (12 Items)</option>
                   <option value="average">Average (18 Items)</option>
-                  <option value="Large">Large (24 Items)</option>
+                  <option value="large">Large (24 Items)</option>
                 </select>
               </label>
               <label
@@ -592,7 +657,7 @@ export default function Home() {
                   <option value="untouched">Untouched</option>
                   <option value="partlySearched">Partly Searched</option>
                   <option value="mostlySearched">Mostly Searched</option>
-                  <option value="heavily Searched">Heavily Searched</option>
+                  <option value="heavilySearched">Heavily Searched</option>
                 </select>
               </label>
 
@@ -732,12 +797,14 @@ export default function Home() {
                   type="number"
                   className="form-control"
                   placeholder="Enter the Player Characters' Level"
+                  min={1}
                   defaultValue={
                     localStorage.getItem(storageKeys.pcLevel) || undefined
                   }
-                  onChange={(e) =>
-                    localStorage.setItem(storageKeys.pcLevel, e.target.value)
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value || 1;
+                    localStorage.setItem(storageKeys.pcLevel, value);
+                  }}
                   aria-label="Player Characters' Level"
                   aria-labelledby="pcLevelLabel"
                 />
