@@ -20,8 +20,12 @@ jobs:
       uses: actions/setup-node@v2.4.0
       with:
         node-version: 16.x
+        
+    - name: Install yarn
+      run: npm i -g yarn
+      
+    - name: Install dependencies
+      run: yarn install
 
     - name: Build
-      uses: Borales/actions-yarn@v2.3.0
-      with:
-        cmd: build
+      run: yarn build
