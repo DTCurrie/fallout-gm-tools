@@ -86,10 +86,14 @@ const locationCategoryItemMaximums = Object.freeze({
 });
 
 const degreeOfSearchValues = Object.freeze({
-  untouched: { difficulty: 0, itemMinimumReduction: 2 },
-  partlySearched: { difficulty: 1, itemMinimumReduction: 3 },
-  mostlySearched: { difficulty: 2, itemMinimumReduction: 4 },
-  heavilySearched: { difficulty: 3, itemMinimumReduction: 5 },
+  untouched: { difficulty: 0, itemMinimumReduction: 2, timeToSearch: 1 },
+  partlySearched: { difficulty: 1, itemMinimumReduction: 3, timeToSearch: 10 },
+  mostlySearched: { difficulty: 2, itemMinimumReduction: 4, timeToSearch: 30 },
+  heavilySearched: {
+    difficulty: 3,
+    itemMinimumReduction: 5,
+    timeToSearch: 120,
+  },
 });
 
 const getOtherItemCategory = (num) => {
@@ -848,6 +852,7 @@ export default function Home() {
           <>
             <h2>Results</h2>
             <p>Here is the summary for your scavenging location.</p>
+
             <h3>Location</h3>
             <ul className="list-group list-group-horizontal-lg my-3 text-center">
               <li className="list-group-item d-flex flex-column w-100">
@@ -876,42 +881,62 @@ export default function Home() {
                 <h4 className="mb-1">Location Level</h4>
                 <p className="mb-1">{calculatedLevel}</p>
               </li>
+              <li className="list-group-item d-flex flex-column w-100">
+                <h4 className="mb-1">Time to Search</h4>
+                <p className="mb-1">
+                  {
+                    degreeOfSearchValues[calculatedLocation.degreeOfSearch]
+                      .timeToSearch
+                  }{" "}
+                  minutes
+                </p>
+              </li>
             </ul>
-            <h3>Items</h3>
-            <div className="row">
-              <div className="col">
-                <table
-                  id="resultsItems"
-                  className="table table-borderless table-striped table-hover"
-                >
-                  <thead>
-                    <tr>
-                      <th scope="col">Category</th>
-                      <th scope="col">Minimum</th>
-                      <th scope="col">Maximum</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.keys(adjustedItems).map((key) => {
-                      const { min, max } = adjustedItems[key];
 
-                      return (
-                        <tr key={key}>
-                          <td>{sentenceCase(key)}</td>
-                          <td>{min}</td>
-                          <td>{max}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-              <div className="col d-flex align-items-center justify-content-center">
-                <pre className="d-flex align-items-center justify-content-center">
-                  <code className="language-markdown">{itemsMarkdown}</code>
-                </pre>
-              </div>
-            </div>
+            <h3>Items</h3>
+            <table
+              id="resultsItems"
+              className="table table-borderless table-striped table-hover"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Category</th>
+                  <th scope="col">Minimum</th>
+                  <th scope="col">Maximum</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(adjustedItems).map((key) => {
+                  const { min, max } = adjustedItems[key];
+
+                  return (
+                    <tr key={key}>
+                      <td>{sentenceCase(key)}</td>
+                      <td>{min}</td>
+                      <td>{max}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            <h3>Markdown</h3>
+            <pre className="d-flex align-items-center justify-content-center">
+              {/* prettier-ignore */}
+              <code className="language-markdown w-100">
+                # Location{`\n`}
+                {`\n`}
+                - Scale: {sentenceCase(calculatedLocation.locationScale)}{`\n`}
+                - Category: {sentenceCase(calculatedLocation.locationCategory)}{`\n`}
+                - Degree of Search: {sentenceCase(calculatedLocation.degreeOfSearch)}{`\n`}
+                - Difficulty: {sentenceCase(calculatedLocation.degreeOfSearch)} (difficulty {calculatedLocation.degreeOfSearchValue.difficulty}){`\n`}
+                - Time to Search: {degreeOfSearchValues[calculatedLocation.degreeOfSearch].timeToSearch} minutes{`\n`}
+                {`\n`}
+                ## Items{`\n`}
+                {itemsMarkdown}
+                </code>
+              {/* prettier-ignore-end */}
+            </pre>
           </>
         )}
       </div>
