@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 
 import useDiceRoller from "../../behaviors/use-dice-roller";
+import useDegreeOfSearch from "./use-degree-of-search";
 
 const locationScaleModifiers = Object.freeze({
   tiny: 1,
