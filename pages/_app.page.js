@@ -1,8 +1,8 @@
 import Layout from "../components/Layout";
 
-import "../styles/globals.css";
+import "../styles/globals.scss";
 
-function MyApp({ Component, pageProps }) {
+function FalloutGmTools({ Component, pageProps }) {
   return (
     <Layout>
       <Component {...pageProps} />
@@ -10,4 +10,4 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default MyApp;
+export default FalloutGmTools;

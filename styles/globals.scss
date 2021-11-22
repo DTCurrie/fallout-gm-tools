@@ -1,0 +1,61 @@
+@import "../styles/fonts";
+@import "../styles/custom";
+@import "~bootstrap/scss/bootstrap";
+
+html {
+  height: 100%;
+}
+
+body {
+  background-image: url("/assets/backgrounds/rice-paper.png");
+}
+
+body,
+#__next {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+#__next {
+  flex: 1;
+}
+
+// Footer
+
+.footer {
+  background-color: rgba($gray-100, 0.35);
+}
+
+// Navbar
+
+#top-nav {
+  z-index: $zindex-sticky;
+
+  .navbar-brand {
+    font-family: $overseer;
+    font-size: 1.5rem;
+  }
+}
+
+// Tables
+
+.table {
+  thead {
+    background-color: $dark;
+    color: $light;
+  }
+}
+
+// Custom
+
+.actor {
+  &.active {
+    background-color: $yellow;
+    color: $dark;
+  }
+
+  .actor-health-range {
+    max-width: 10rem;
+  }
+}

@@ -1,0 +1,41 @@
+@import "~bootstrap/scss/functions";
+
+$overseer: Overseer, system-ui, -apple-system, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+$white: #ffffff;
+$blue: #407aad;
+$yellow: #f9b72f;
+
+$body-bg: #ffffff;
+$body-color: #333333;
+
+$headings-font-family: $overseer;
+
+// Navs
+
+$nav-tabs-border-color: $blue;
+$nav-tabs-link-active-bg: rgba($white, 0.35);
+
+$navbar-dark-color: rgba($white, 0.8);
+$navbar-dark-hover-color: rgba($white, 0.9);
+$navbar-dark-active-color: $white;
+$navbar-dark-disabled-color: rgba($white, 0.55);
+$navbar-dark-toggler-border-color: rgba($white, 0.8);
+
+// Tables
+
+$table-color: $body-color;
+$table-bg: rgba($yellow, 0.15);
+$table-accent-bg: transparent;
+
+$table-striped-color: $table-color;
+$table-striped-bg-factor: 0.35;
+$table-striped-bg: rgba($yellow, $table-striped-bg-factor);
+
+$table-hover-color: $table-color;
+$table-hover-bg-factor: 0.5;
+$table-hover-bg: rgba($yellow, $table-hover-bg-factor);
+
+@import "~bootstrap/scss/variables";
