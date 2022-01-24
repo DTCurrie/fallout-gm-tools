@@ -118,10 +118,13 @@ export const attackFactory = (
 
 export const damageTypes = Object.freeze({
   physical: "Physical",
+  energy: "Energy",
 });
 
 export const ranges = Object.freeze({
   close: "C",
+  medium: "M",
+  long: "L",
 });
 
 export const abilityFactory = ({ name, description }) => ({
