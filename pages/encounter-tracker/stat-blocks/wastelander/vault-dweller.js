@@ -13,6 +13,7 @@ export const vaultDwellerDefaults = {
   type: "Human",
   keywords: [],
   category: categories.wastelander,
+  xp: 52,
   special: {
     STR: 5,
     PER: 6,
@@ -96,7 +97,7 @@ export const vaultDwellerDefaults = {
   inventory: {
     items: ["Vault Jumpsuit", "10mm pistol"],
     ammunition: {
-      roll: `2d20`,
+      roll: `8+4CD`,
       type: "10mm rounds",
     },
     wealth: 2,

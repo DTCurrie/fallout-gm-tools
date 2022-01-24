@@ -20,7 +20,7 @@ export default class FalloutGmToolsDocument extends Document {
 
           <script
             async
-            crossOrigin
+            crossOrigin="anonymous"
             src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"
           ></script>
         </body>

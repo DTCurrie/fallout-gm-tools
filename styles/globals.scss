@@ -47,15 +47,8 @@ body,
   }
 }
 
-// Custom
+// ----------
+// Pages
+//
 
-.actor {
-  &.active {
-    background-color: $yellow;
-    color: $dark;
-  }
-
-  .actor-health-range {
-    max-width: 10rem;
-  }
-}
+@import "./pages";

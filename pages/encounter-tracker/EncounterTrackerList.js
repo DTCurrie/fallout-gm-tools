@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import useMount from "../../behaviors/use-mount";
-import useStorage from "../../behaviors/use-storage";
+
+import StatBlock from "../../components/StatBlock";
+
+import EncounterTrackerInjuries from "./EncounterTrackerInjuries";
 import { useEncounterTrackerStateContext } from "./EncounterTrackerStateProvider";
 
 function useIndexedActors() {
@@ -25,7 +27,7 @@ function useIndexedActors() {
         if (toIndex.length > 1) {
           return toIndex.map((actor, index) => ({
             ...actor,
-            name: `${actor.name} #${index + 1}`,
+            displayName: `${actor.name} #${index + 1}`,
           }));
         }
 
@@ -116,27 +118,33 @@ export function EncounterTrackerList() {
               <div className="d-flex flex-column flex-lg-row align-items-lg-center">
                 <div className="mb-2 mb-lg-0">
                   <span className="ms-lg-2">
-                    <span className="fw-bold ms-2">{name}</span>
+                    <span className="fw-bold ms-2">
+                      {props.displayName || name}
+                    </span>
                   </span>
                   <span className="badge bg-primary rounded-pill ms-2 me-auto">
                     {initiative}
                   </span>
 
-                  <div className="w-100 ms-lg-2 mt-2">
-                    <label id className="form-label" htmlFor={`${id}Note`}>
+                  <div className="w-100 ms-lg-2 mt-2 mx-auto">
+                    <label
+                      id={`${id}Note`}
+                      className="form-label"
+                      htmlFor={`${id}Note`}
+                    >
                       <span className="visually-hidden">Note</span>
                       <input
                         type="text"
-                        id={`${id}Note`}
+                        id={`${id}_Note`}
                         className="form-control form-control-sm"
                         placeholder="Note"
                         defaultValue={props.note}
                         onChange={(e) => {
                           e.preventDefault();
                           editActor(id, {
+                            ...props,
                             name,
                             initiative,
-                            ...props,
                             note: e.target.value,
                           });
                         }}
@@ -145,11 +153,11 @@ export function EncounterTrackerList() {
                   </div>
                 </div>
                 {props.hp !== undefined && (
-                  <div className="mx-lg-auto px-2 actor-health-range">
+                  <div className="mx-auto px-2 actor-health-range">
                     <label htmlFor={`${id}Hp`} className="form-label">
                       Hit Points: {props.hp}/{props.maxHp}
                       <input
-                        id={`${id}hp`}
+                        id={`${id}_Hp`}
                         type="range"
                         className="form-range"
                         min="0"
@@ -158,9 +166,9 @@ export function EncounterTrackerList() {
                         onChange={(e) => {
                           e.preventDefault();
                           editActor(id, {
+                            ...props,
                             name,
                             initiative,
-                            ...props,
                             hp: parseInt(e.target.value),
                           });
                         }}
@@ -169,98 +177,16 @@ export function EncounterTrackerList() {
                   </div>
                 )}
                 {props.injuries !== undefined && (
-                  <div className="mx-lg-auto px-2">
-                    <div className="mb-1">Injuries</div>
-                    <div className="d-flex flex-column">
-                      <div className="form-check form-switch me-2">
-                        <label
-                          className="form-check-label"
-                          htmlFor={`${id}HeadCheckbox`}
-                        >
-                          <small className="text-muted">Head</small>
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`${id}HeadCheckbox`}
-                          />
-                        </label>
-                      </div>
-                      <div className="form-check form-switch me-2">
-                        <label
-                          className="form-check-label"
-                          htmlFor={`${id}LeftArmCheckbox`}
-                        >
-                          <small className="text-muted">Left Arm</small>
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`${id}LeftArmCheckbox`}
-                          />
-                        </label>
-                      </div>
-                      <div className="form-check form-switch">
-                        <label
-                          className="form-check-label"
-                          htmlFor={`${id}RightArmCheckbox`}
-                        >
-                          <small className="text-muted">Right Arm</small>
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`${id}RightArmCheckbox`}
-                          />
-                        </label>
-                      </div>
-                      <div className="form-check form-switch me-2">
-                        <label
-                          className="form-check-label"
-                          htmlFor={`${id}LeftLegCheckbox`}
-                        >
-                          <small className="text-muted">Left Leg</small>
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`${id}LeftLegCheckbox`}
-                          />
-                        </label>
-                      </div>
-                      <div className="form-check form-switch me-2">
-                        <label
-                          className="form-check-label"
-                          htmlFor={`${id}RightLegCheckbox`}
-                        >
-                          <small className="text-muted">Right Leg</small>
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`${id}RightLegCheckbox`}
-                          />
-                        </label>
-                      </div>
-                      <div className="form-check form-switch">
-                        <label
-                          className="form-check-label"
-                          htmlFor={`${id}TorsoCheckbox`}
-                        >
-                          <small className="text-muted">Torso</small>
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`${id}TorsoCheckbox`}
-                          />
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+                  <EncounterTrackerInjuries id={id} injuries={props.injuries} />
                 )}
-                <div className="ms-auto">
+                <div className="mx-auto mt-3 mt-lg-0">
                   {props.special && (
                     <button
                       className="btn btn-sm btn-primary"
                       data-bs-toggle="collapse"
-                      data-bs-target={`#${id}Stats`}
+                      data-bs-target={`#${id}_Stats`}
                       aria-expanded="false"
-                      aria-controls={`${id}Stats`}
+                      aria-controls={`${id}_Stats`}
                     >
                       stats
                     </button>
@@ -276,9 +202,15 @@ export function EncounterTrackerList() {
                   </button>
                 </div>
               </div>
-              <div className="collapse" id={`${id}Stats`}>
-                Coming soon
-              </div>
+
+              {props.special && (
+                <div className="collapse" id={`${id}_Stats`}>
+                  <StatBlock
+                    key={`${id}_StatBlock`}
+                    {...{ id, name, initiative, ...props }}
+                  />
+                </div>
+              )}
             </li>
           ))}
       </ol>

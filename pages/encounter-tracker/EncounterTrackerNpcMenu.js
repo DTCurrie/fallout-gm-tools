@@ -38,8 +38,6 @@ export default function EncounterTrackerNpcMenu() {
   const statBlockMap = useStatBlockMap();
   const categories = useCategories();
 
-  console.log("EncounterTrackerNpcMenu", { statBlockMap, categories });
-
   return (
     <div className="encounter-tracker-menu__section npcs-menu p-2 w-100">
       <h2 className="">NPCs</h2>

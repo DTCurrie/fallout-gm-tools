@@ -75,9 +75,9 @@ function useActors() {
 
   const editActor = (id, props) => {
     const updatedActors = [...actors];
-    const { index } = getActor(id);
+    const { index, ...attrs } = getActor(id);
 
-    updatedActors[index] = { ...props, id };
+    updatedActors[index] = { ...attrs, ...props, id };
     setActors(updatedActors);
   };
 

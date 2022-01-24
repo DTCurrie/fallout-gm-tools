@@ -1,0 +1,38 @@
+.encounter-tracker {
+  .actor {
+    &.active {
+      background-color: $yellow;
+      color: $dark;
+    }
+
+    .actor-health-range {
+      max-width: 10rem;
+    }
+  }
+}
+
+.encounter-tracker-injuries {
+  &__inputs {
+    margin: 0 auto;
+    max-width: 8rem;
+
+    @include media-breakpoint-up(sm) {
+      max-width: 22.75rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      max-width: 14.75rem;
+    }
+  }
+  &__label {
+    display: inline-block;
+
+    @include media-breakpoint-up(sm) {
+      min-width: 4rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      min-width: 3.5rem;
+    }
+  }
+}

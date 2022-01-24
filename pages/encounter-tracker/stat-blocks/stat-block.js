@@ -144,16 +144,20 @@ export const inventoryFactory = ({ items, ammunition, wealth }) => {
   return value;
 };
 
-export const characterHp = ({
-  special: { END, LUCK },
-  level,
-  isNotable,
-  major,
-}) => {
-  const hpModifier = major ? 2 : isNotable ? 1 : 0;
-
-  return END + level + LUCK * hpModifier;
+export const importanceModifier = (importance, [normal, notable, major]) => {
+  switch (importance) {
+    case "notable":
+      return notable;
+    case "major":
+      return major;
+    case "normal":
+    default:
+      return normal;
+  }
 };
+
+export const characterHp = ({ special: { END, LUCK }, level, importance }) =>
+  END + level + LUCK * importanceModifier(importance, [0, 1, 2]);
 
 export const characterInjuries = ({
   head = false,
@@ -171,14 +175,8 @@ export const characterInjuries = ({
   torso,
 });
 
-export const characterInitiative = ({
-  special: { PER, AGI },
-  isNotable,
-  major,
-}) => {
-  const initiativeModifier = major ? 4 : isNotable ? 2 : 0;
-  return PER + AGI + initiativeModifier;
-};
+export const characterInitiative = ({ special: { PER, AGI }, importance }) =>
+  PER + AGI + importanceModifier(importance, [0, 2, 4]);
 
 export const characterMeleeBonus = ({ special: { STR } }) => {
   switch (STR) {
@@ -196,14 +194,8 @@ export const characterMeleeBonus = ({ special: { STR } }) => {
   }
 };
 
-export const characterLuckPoints = ({
-  special: { LUCK },
-  isNotable,
-  major,
-}) => {
-  const luckPointsModifier = major ? 1 : isNotable ? 0.5 : 0;
-  return Math.ceil(LUCK * luckPointsModifier);
-};
+export const characterLuckPoints = ({ special: { LUCK }, importance }) =>
+  Math.ceil(LUCK * importanceModifier(importance, [0, 0.5, 1]));
 
 export const characterFactory = ({
   name,
@@ -211,8 +203,8 @@ export const characterFactory = ({
   type,
   keywords,
   category,
-  notable = false,
-  major = false,
+  importance = "normal",
+  xp = 1,
   special,
   skills,
   injuries = {},
@@ -223,8 +215,7 @@ export const characterFactory = ({
 }) => {
   const specialValue = specialFactory(special);
   const skillsValue = skillsFactory(skills);
-  const isNotable = notable && !major;
-  const maxHp = characterHp({ special: specialValue, level, isNotable, major });
+  const maxHp = characterHp({ special: specialValue, level, importance });
 
   return {
     name,
@@ -232,21 +223,20 @@ export const characterFactory = ({
     type,
     keywords,
     category,
-    notable: isNotable,
-    major,
+    importance,
+    xp,
     special: specialValue,
     skills: skillsValue,
     hp: maxHp,
     maxHp,
     initiative: characterInitiative({
       special: specialValue,
-      isNotable,
-      major,
+      importance,
     }),
     defense: specialValue.AGI >= 9 ? 2 : 1,
     carryWeight: 150 + specialValue.STR * 10,
     meleeBonus: characterMeleeBonus({ special }),
-    luckPoints: characterLuckPoints({ special, isNotable, major }),
+    luckPoints: characterLuckPoints({ special, importance }),
     injuries: characterInjuries(injuries),
     damageResistance: damageResistanceFactory(damageResistance),
     attacks: attacks.map((args) =>
@@ -261,5 +251,6 @@ export const characterFactory = ({
 };
 
 export const categories = Object.freeze({
+  raider: "Raider",
   wastelander: "Wastelander",
 });

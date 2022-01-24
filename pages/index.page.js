@@ -17,7 +17,7 @@ export default function Home() {
       <h1>Fallout GM Tools</h1>
 
       <div className="row row-cols-1 row-cols-md-2 g-4">
-        <div className="col">
+        <div className="col d-flex">
           <button
             className="card bg-white shadow"
             onClick={(e) => {
@@ -33,6 +33,27 @@ export default function Home() {
               <p className="card-text">
                 Use this calculator to determine scavenging item minimums and
                 maximums and location levels.
+              </p>
+            </div>
+          </button>
+        </div>
+
+        <div className="col d-flex">
+          <button
+            className="card bg-white shadow"
+            onClick={(e) => {
+              e.preventDefault();
+              router.push("/encounter-tracker", undefined, {
+                shallow: true,
+              });
+            }}
+            aria-label="Encounter Tracker"
+          >
+            <div className="card-body">
+              <h5 className="card-title">Encounter Tracker</h5>
+              <p className="card-text">
+                Use this tracker to manage combat encounters between players and
+                NPCs.
               </p>
             </div>
           </button>
